@@ -7,9 +7,9 @@ import {
 	DeleteForever as DeleteIcon
 } from '@mui/icons-material';
 
-import { ICompanyListStore, IProjectListStore, IProjectService } from "../../di/interfaces/services";
+import type { ICompanyListStore, IProjectListStore, IProjectService } from "../../di/interfaces/services";
 import { TYPES } from "../../di/types/types";
-import { IProject, IProjectDto } from "../../model/Project";
+import type { IProject, IProjectDto } from "../../model/Project";
 import { ProjectListStore } from "../../services/ProjectListStore";
 import { CompanyListStore } from "../../services/CompanyListStore";
 import { SelectChangeEvent } from "@mui/material/Select";

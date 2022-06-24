@@ -4,8 +4,8 @@ import { ICompany } from "../../model/Company";
 import { IProject, IProjectDto } from "../../model/Project";
 
 export interface IProjectService extends IBaseService<IProjectDto> {
-    rawToDto: (item?: IProject) => IProjectDto | undefined;     
-    dtoToRaw: (item?: IProjectDto) => IProject | undefined;
+    rawToDto: (item: IProject) => IProjectDto;
+    dtoToRaw: (item: IProjectDto) => IProject;
 }
 
 export interface IProjectListStore extends IBaseListStore<IProjectDto> {

@@ -379,5 +379,5 @@ export const fakeDb = {
     companies: companiesTable,
     projects: projectsTable,
     logs: timeLogs,
-    useFakeDelays: false
+    useFakeDelays: true
 };

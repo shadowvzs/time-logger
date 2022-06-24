@@ -1,7 +1,7 @@
 import { Container } from 'inversify';
 
 import { TYPES } from './types/types';
-import { ICompanyListStore, ICompanyService, IConfig, IProjectListStore, IProjectService } from './interfaces/services';
+import type { ICompanyListStore, ICompanyService, IConfig, IProjectListStore, IProjectService } from './interfaces/services';
 
 import { ProjectService } from '../services/ProjectService';
 import { ProjectListStore } from '../services/ProjectListStore';

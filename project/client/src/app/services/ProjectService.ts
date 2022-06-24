@@ -1,9 +1,9 @@
 import { injectable } from "inversify";
 
-import { IProject, IProjectDto } from "../model/Project";
+import type { IProject, IProjectDto } from "../model/Project";
 import { BaseService } from "../core/services/BaseService";
 import { api } from "../api/api";
-import { IProjectService } from "../di/interfaces/services";
+import type { IProjectService } from "../di/interfaces/services";
 import { fakeDb } from "./dummyDb";
 import { guid } from "../utils/guid";
 import { delayPromise } from "../utils/delayPromise";
@@ -17,8 +17,7 @@ export class ProjectService extends BaseService<IProjectDto> implements IProject
 
     /* overwrite the base method which would call the endpoint and we use fake frontend db */
 
-    public rawToDto(item?: IProject): IProjectDto | undefined {
-        if (!item) { return; }
+    public rawToDto(item: IProject): IProjectDto {
         const dto = {
             id: item.id,
             deadline: item.deadline ? new Date(item.deadline) : null,
@@ -36,8 +35,7 @@ export class ProjectService extends BaseService<IProjectDto> implements IProject
         return dto;
     }
 
-    public dtoToRaw(item?: IProjectDto): IProject | undefined {
-        if (!item) { return; }
+    public dtoToRaw(item: IProjectDto): IProject {
         const raw = {
             id: item.id || guid(),
             name: item.name,
@@ -83,7 +81,6 @@ export class ProjectService extends BaseService<IProjectDto> implements IProject
                 const sortDir = params.sortDir === 'ASC' ? 1 : -1;
                 projects = projects.sort((a, b) => this.sortResolver(a, b, params.sortKey as string, sortDir))
             }
-
         }
 
         if (fakeDb.useFakeDelays) { await delayPromise(1000, 2000); }
@@ -92,7 +89,7 @@ export class ProjectService extends BaseService<IProjectDto> implements IProject
 
     public async create(item: IProjectDto): Promise<IProjectDto> {
         const rawProject = {
-            id: guid(),
+            id: item.id || guid(),
             name: item.name,
             deadline: item.deadline?.toISOString(),
             companyId: item.company?.id,
@@ -100,7 +97,7 @@ export class ProjectService extends BaseService<IProjectDto> implements IProject
         } as IProject;
         fakeDb.projects.push(rawProject);
         if (fakeDb.useFakeDelays) { await delayPromise(500, 1000) };
-        sendMsg('success', `Project "${item.name}" was created!`);
+        if (sendMsg) { sendMsg('success', `Project "${item.name}" was created!`); }
         return this.rawToDto(rawProject)!;
     }
 
@@ -115,7 +112,7 @@ export class ProjectService extends BaseService<IProjectDto> implements IProject
             fakeDb.logs = [...fakeDb.logs.filter(x => x.projectId !== item.id), ...newLogs];
         }
         if (fakeDb.useFakeDelays) { await delayPromise(500, 1000); }
-        sendMsg('success', `Project "${item.name}" was updated!`);
+        if (sendMsg) { sendMsg('success', `Project "${item.name}" was updated!`); }
         return item;
     }
 
@@ -123,6 +120,6 @@ export class ProjectService extends BaseService<IProjectDto> implements IProject
         fakeDb.projects = fakeDb.projects.filter(x => x.id !== id);
         fakeDb.logs = fakeDb.logs.filter(x => x.projectId !== id);
         if (fakeDb.useFakeDelays) { await delayPromise(500, 1000); }
-        sendMsg('success', `Project was deleted!`);
+        if (sendMsg) { sendMsg('success', `Project was deleted!`); }
     }
 }
