@@ -41,6 +41,9 @@ export abstract class BaseService<T extends IBaseEntity> implements IBaseService
         const { url, method } = this._api.create();
         const response = await fetch(url, {
             method: method || 'POST',
+            headers: {
+                'content-type': 'application/json'
+            },
             body: JSON.stringify(item)
         });
         const entity = await response.json() as T;
@@ -51,7 +54,10 @@ export abstract class BaseService<T extends IBaseEntity> implements IBaseService
         const { url, method } = this._api.update(item.id);
         const response = await fetch(url, {
             method: method || 'PUT',
-            body: JSON.stringify(item)
+            body: JSON.stringify(item),
+            headers: {
+                'content-type': 'application/json'
+            },
         });
         const entity = await response.json() as T;
         return entity;

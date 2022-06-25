@@ -42,7 +42,7 @@ class NewProjectFormStore {
         this.project.companyId = _props.companies[0]?.id || '';
     }
 
-    public onSelectCompany(ev: SelectChangeEvent<string>) {
+    public onSelectCompany = (ev: SelectChangeEvent<string>) => {
         this.setProjectData('companyId', ev.target.value);
     }
 
@@ -54,7 +54,6 @@ class NewProjectFormStore {
     public onSave = () => {
         const { onClose, onSubmit } = this._props;
         const raw = toJS(this.project);
-        console.log(raw)
         onSubmit(raw);
         onClose();
     }

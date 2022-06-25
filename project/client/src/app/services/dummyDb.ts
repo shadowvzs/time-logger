@@ -30,48 +30,7 @@ const companiesTable: ICompany[] = [
 ];
 
 const projectsTable: IProject[] = [
-    {
-        id: '1c070edb-5e19-43f7-9727-cbc585524ebb',
-        name: 'External portal',
-        deadline: '2022-07-22T09:00:00.898Z',
-        companyId: '01e3903b-fabf-43bf-ad1f-550eee74f6bc',
-        completed: false,
-    },
-    {
-        id: 'c76cab95-4a52-4344-a803-ab78e06c59fd',
-        name: 'Main project',
-        deadline: '2022-07-12T15:00:00.898Z',
-        companyId: '01e3903b-fabf-43bf-ad1f-550eee74f6bc',
-        completed: false,
-    },
-    {
-        id: '5bb3e3fb-35e6-4d5a-b2ba-f5da9eeac775',
-        name: 'Proctocol Update',
-        deadline: '2022-08-10T12:00:00.898Z',
-        companyId: '6dd0b608-04a8-42e1-bcaf-971367bd8302',
-        completed: false,
-    },
-    {
-        id: '2593faee-7b0d-4a56-81d8-9466c82a2ac4',
-        name: 'Car Preview',
-        deadline: '2022-07-01T16:00:00.898Z',
-        companyId: '01cfd494-fca0-4a3f-9a2d-1763d62f1ae2',
-        completed: false,
-    },
-    {
-        id: '59dedd79-bce9-4c6e-8004-e91196dc7d3b',
-        name: 'SSO Auth',
-        deadline: '2022-06-28T16:00:00.898Z',
-        companyId: 'c6aee1bb-a570-49f4-b3b8-6448e336c42b',
-        completed: false,
-    },
-    {
-        id: 'd8d28769-5d6b-4f36-b1e2-6df9f9fec2a6',
-        name: 'Project Update',
-        deadline: '2022-07-05T18:00:00.898Z',
-        companyId: 'c6aee1bb-a570-49f4-b3b8-6448e336c42b',
-        completed: false,
-    },
+
     {
         id: 'b23817f7-1eae-4de4-bd4a-a1d8544604ee',
         name: 'Admin Panel',
@@ -96,30 +55,6 @@ const projectsTable: IProject[] = [
 ];
 
 const timeLogs: ITimeLog[] = [
-    {
-        id: '01cfd494-fca0-4a3f-9a2d-1763d62f1a00',
-        projectId: '1c070edb-5e19-43f7-9727-cbc585524ebb',
-        loggedMinutes: 30,
-        createdAt: '2022-07-14T10:00:00.898Z',
-    },
-    {
-        id: '01cfd494-fca0-4a3f-9a2d-1763d62f1a01',
-        projectId: '1c070edb-5e19-43f7-9727-cbc585524ebb',
-        loggedMinutes: 60,
-        createdAt: '2022-07-15T10:00:00.898Z',
-    },
-    {
-        id: '01cfd494-fca0-4a3f-9a2d-1763d62f1a02',
-        projectId: '1c070edb-5e19-43f7-9727-cbc585524ebb',
-        loggedMinutes: 90,
-        createdAt: '2022-07-16T10:00:00.898Z',
-    },
-    {
-        id: '01cfd494-fca0-4a3f-9a2d-1763d62f1a03',
-        projectId: '1c070edb-5e19-43f7-9727-cbc585524ebb',
-        loggedMinutes: 60,
-        createdAt: '2022-07-17T10:00:00.898Z',
-    },
     {
         id: '01cfd494-fca0-4a3f-9a2d-1763d62f1a04',
         projectId: '1c070edb-5e19-43f7-9727-cbc585524ebb',

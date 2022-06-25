@@ -97,8 +97,7 @@ export class ProjectListViewStore {
 						<DeleteIcon
 							style={{ fill: 'red', cursor: 'pointer', fontSize: 28 }}
 							onClick={() => {
-								this.listStore.service.delete(item.id);
-								this.listStore.fetch();
+								this.listStore.service.delete(item.id).then(() => this.listStore.fetch());
 							}}
 
 						/>
@@ -142,7 +141,6 @@ export class ProjectListViewStore {
 	public onAddProject = (rawProject: IProject): void => {
 		const projectService = (this.listStore.service as IProjectService);
 		const dto = projectService.rawToDto(rawProject)!;
-		projectService.create(dto);
-		this.listStore.fetch();
+		projectService.create(dto).then(() => this.listStore.fetch());
 	}
 }

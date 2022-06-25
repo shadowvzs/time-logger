@@ -14,6 +14,7 @@ export interface IProjectDto extends IBaseEntity {
     deadline: Date | null;
     completed: boolean;
     company?: ICompany;
+    companyId?: string;
     logs: ITimeLog[];
 
     totalSpentTime: number;

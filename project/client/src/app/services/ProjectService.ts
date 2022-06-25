@@ -6,7 +6,6 @@ import { api } from "../api/api";
 import type { IProjectService } from "../di/interfaces/services";
 import { fakeDb } from "./dummyDb";
 import { guid } from "../utils/guid";
-import { delayPromise } from "../utils/delayPromise";
 import { sendMsg } from "../core/components/toastify/Toastify";
 
 @injectable()
@@ -21,6 +20,7 @@ export class ProjectService extends BaseService<IProjectDto> implements IProject
         const dto = {
             id: item.id,
             deadline: item.deadline ? new Date(item.deadline) : null,
+            companyId: item.companyId,
             company: fakeDb.companies.find(x => x.id === item.companyId),
             completed: item.completed,
             name: item.name,
@@ -53,7 +53,7 @@ export class ProjectService extends BaseService<IProjectDto> implements IProject
         } else if (sortKey === 'companyName') {
             return (a.company?.name || '').localeCompare(b.company?.name || '') * sortDir;
         } else if (sortKey === 'timeSpent') {
-            return a.totalSpentTime - b.totalSpentTime;
+            return a.totalSpentTime - b.totalSpentTime * sortDir;
         } else if (sortKey === 'deadline') {
             return ((a.deadline?.getTime() || 0) - (b.deadline?.getTime() || 0)) * sortDir;
         } else if (sortKey === 'completed') {
@@ -63,15 +63,32 @@ export class ProjectService extends BaseService<IProjectDto> implements IProject
     }
 
     public async get(id: string) {
-        const project = fakeDb.projects.find(x => x.id === id);
+        const project = this.transform(await super.get(id));
         if (!project) {
             throw new Error(`Entity is missing (id: ${id})`);
         }
-        return this.rawToDto(project) as IProjectDto;
+        return project;
+    }
+
+    public transform(item: IProjectDto): IProjectDto {
+        if (typeof item.deadline === 'string') {
+            item.deadline = new Date(item.deadline);
+        }
+        if (!item.hasOwnProperty('totalSpentTime')) {
+            Object.defineProperty(item, 'totalSpentTime', {
+                get: function () { return item.logs.reduce((t, c) => t + c.loggedMinutes, 0); }
+            });
+        }
+        if (!item.hasOwnProperty('isEnded')) {
+            Object.defineProperty(item, 'isEnded', {
+                get: function () { return (item.deadline && this.deadline.getTime() < Date.now()) || false; }
+            });
+        }
+        return item;
     }
 
     public async getList(params?: Record<string, string | number | boolean>) {
-        let projects = fakeDb.projects.map(x => this.rawToDto(x)!).filter(Boolean);
+        let projects = (await super.getList(params)).map(this.transform);
         if (params) {
             // filter out on frontend, which often happens on backend not here, just I not used backend here
             if (params.companyId) {
@@ -83,43 +100,24 @@ export class ProjectService extends BaseService<IProjectDto> implements IProject
             }
         }
 
-        if (fakeDb.useFakeDelays) { await delayPromise(1000, 2000); }
         return projects;
     }
 
     public async create(item: IProjectDto): Promise<IProjectDto> {
-        const rawProject = {
-            id: item.id || guid(),
-            name: item.name,
-            deadline: item.deadline?.toISOString(),
-            companyId: item.company?.id,
-            completed: false,
-        } as IProject;
-        fakeDb.projects.push(rawProject);
-        if (fakeDb.useFakeDelays) { await delayPromise(500, 1000) };
+        const savedItem = await super.create(item);
+
         if (sendMsg) { sendMsg('success', `Project "${item.name}" was created!`); }
-        return this.rawToDto(rawProject)!;
+        return this.transform(savedItem);
     }
 
     public async update(item: IProjectDto): Promise<IProjectDto> {
-        const raw = this.dtoToRaw(item)!;
-        const projectIdx = fakeDb.projects.findIndex(x => x.id === item.id);
-        if (projectIdx >= 0) {
-            fakeDb.projects[projectIdx] = raw;
-        }
-        if (item.logs.length) {
-            const newLogs = [...item.logs];
-            fakeDb.logs = [...fakeDb.logs.filter(x => x.projectId !== item.id), ...newLogs];
-        }
-        if (fakeDb.useFakeDelays) { await delayPromise(500, 1000); }
+        await super.update(item);
         if (sendMsg) { sendMsg('success', `Project "${item.name}" was updated!`); }
         return item;
     }
 
     public async delete(id: string) {
-        fakeDb.projects = fakeDb.projects.filter(x => x.id !== id);
-        fakeDb.logs = fakeDb.logs.filter(x => x.projectId !== id);
-        if (fakeDb.useFakeDelays) { await delayPromise(500, 1000); }
+        await super.delete(id);
         if (sendMsg) { sendMsg('success', `Project was deleted!`); }
     }
 }
