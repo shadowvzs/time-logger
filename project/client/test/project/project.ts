@@ -6,9 +6,9 @@ import 'reflect-metadata';
 import { myContainer } from '../../src/app/di/container';
 import { ICompanyService, IProjectService } from '../../src/app/di/interfaces/services';
 import { TYPES } from '../../src/app/di/types/types';
-import { ICompany } from '../../src/app/model/Company';
+import type { ICompany } from '../../src/app/model/Company';
 import type { IProject, IProjectDto } from '../../src/app/model/Project';
-import { ITimeLog } from '../../src/app/model/TimeLog';
+import type { ITimeLog } from '../../src/app/model/TimeLog';
 import { guid } from '../../src/app/utils/guid';
 
 let companyService: ICompanyService;

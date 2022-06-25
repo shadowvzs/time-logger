@@ -11,7 +11,6 @@ export interface IBaseService<T extends IBaseEntity> {
 
 export abstract class BaseService<T extends IBaseEntity> implements IBaseService<T> {
     constructor(protected _api: IBaseCrudApi) {
-
     }
 
     public async get(id: string) {
@@ -25,14 +24,16 @@ export abstract class BaseService<T extends IBaseEntity> implements IBaseService
 
     public async getList(params?: Record<string, string | number | boolean>) {
         const { url, method } = this._api.getList();
-        const urlWithParams = new URL(url);
-        if (params) {
-            Object.entries(params).forEach(([name, value]) => urlWithParams.searchParams.set(name, String(value)));
-        }
+        // const urlWithParams = new URL(url);
+        console.log(url, params)
+        // if (params) {
+        //     Object.entries(params).forEach(([name, value]) => urlWithParams.searchParams.set(name, String(value)));
+        // }
 
         const response = await fetch(url, {
             method: method || 'GET',
         });
+        console.log(url, response)
         const entities = await response.json() as T[];
         return entities;
     }
