@@ -14,7 +14,7 @@ namespace API.Controllers
     {
         // GET api/companies/
         [HttpGet]
-        public async Task<ActionResult<System.Collections.Generic.List<Company>>> List()
+        public async Task<ActionResult<PaginationResult<Company>>> List()
         {
             return await Mediator.Send(new List.Query());
         }

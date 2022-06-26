@@ -1,9 +1,10 @@
 import { IBaseCrudApi } from "../../api/api";
 import { IBaseEntity } from "../model/BaseEntity";
+import { PaginationResult } from "../model/PaginationResult";
 
 export interface IBaseService<T extends IBaseEntity> {
     get: (id: string) => Promise<T>;
-    getList: (params?: Record<string, string | number | boolean>) => Promise<T[]>;
+    getList: (params?: Record<string, string | number | boolean>) => Promise<PaginationResult<T>>;
     create: (item: T) => Promise<T>;
     update: (item: T) => Promise<T>;
     delete: (id: string) => Promise<void>;
@@ -22,20 +23,16 @@ export abstract class BaseService<T extends IBaseEntity> implements IBaseService
         return entity;
     }
 
-    public async getList(params?: Record<string, string | number | boolean>) {
-        const { url, method } = this._api.getList();
-        // const urlWithParams = new URL(url);
-        console.log(url, params)
-        // if (params) {
-        //     Object.entries(params).forEach(([name, value]) => urlWithParams.searchParams.set(name, String(value)));
-        // }
+    public async getList(params?: Record<string, string | number | boolean>): Promise<PaginationResult<T>> {
+        let { url, method } = this._api.getList();
 
-        const response = await fetch(url, {
-            method: method || 'GET',
-        });
-        console.log(url, response)
-        const entities = await response.json() as T[];
-        return entities;
+        if (params) {
+            const queryParams = Object.entries(params).map(([key, value]) => `${key}=${String(value)}`).join('&');
+            url += ['?', '&'][+url.includes('?')] + queryParams;
+        }
+
+        const response = await fetch(url, { method: method || 'GET' });
+        return await response.json() as PaginationResult<T>;
     }
 
     public async create(item: T) {

@@ -4,8 +4,6 @@ using API.Middleware;
 using Domain;
 
 using MediatR;
-// using AutoMapper;
-// using MySql.Data.EntityFrameworkCore;
 
 using Microsoft.EntityFrameworkCore;
 using Microsoft.AspNetCore.Builder;
@@ -72,8 +70,9 @@ namespace API
                 opt.AddPolicy("MyPolicy", policy => 
                 {
                     policy
-                        .WithOrigins("http://localhost:3000")
-                        .AllowCredentials()
+                        // .WithOrigins("http://localhost:3000")
+                        // .AllowCredentials()
+                        .AllowAnyOrigin()
                         .AllowAnyMethod()
                         .AllowAnyHeader();
                 });
@@ -106,6 +105,7 @@ namespace API
                 .FrameAncestors(s => s.Self())
             );
 
+            // atm my frontend is separated
             // app.UseDefaultFiles();
             // app.UseStaticFiles();
 

@@ -14,11 +14,13 @@ namespace Application.Companies
 {
     public class List
     {
-        public class Query : IRequest<List<Company>>
+        public class Query : IRequest<PaginationResult<Company>>
         {
+            public int Index { get; set; } = 0;
+            public int Count { get; set; } = 100;
         }
 
-        public class Handler : IRequestHandler<Query, List<Company>>
+        public class Handler : IRequestHandler<Query, PaginationResult<Company>>
         {
 
             private readonly DataContext _context;
@@ -30,15 +32,20 @@ namespace Application.Companies
                 _mapper = mapper;
             }
 
-            public async Task<List<Company>> Handle(Query request, CancellationToken cancellationToken)
+            public async Task<PaginationResult<Company>> Handle(Query request, CancellationToken cancellationToken)
             {
             
                 var items = await _context.Companies
-                    // .Where(x => x.Date >= request.StartDate)
                     .OrderBy(x => x.Name)
                     .ToListAsync();
 
-                return items;
+                return new PaginationResult<Company>
+                {
+                    Index = request.Index,
+                    Count = request.Count,
+                    TotalCount = items.Count,
+                    Data = items
+                };
             }
         }
     }

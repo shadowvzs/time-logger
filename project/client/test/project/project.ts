@@ -28,7 +28,7 @@ describe("Projects", function () {
   describe("Preparation", function () {
     it("load companies", async () => {
       const companyList = await companyService.getList();
-      companies.push(...companyList);
+      companies.push(...companyList.data);
       expect(companies.length).to.greaterThan(0);
       companyId = companies[0].id;
     });
@@ -60,8 +60,8 @@ describe("Projects", function () {
     it("save project", async () => {
       const filters = { companyId };
       const projects = await projectService.getList({ ...filters, sortKey: 'createdAt', sortDir: 'DESC' });
-      expect(projects.length).to.greaterThan(0);
-      expect(projects.some(x => x.id === projectId)).to.true;
+      expect(projects.data.length).to.greaterThan(0);
+      expect(projects.data.some(x => x.id === projectId)).to.true;
     });
   });
 

@@ -47,20 +47,20 @@ export class ProjectService extends BaseService<IProjectDto> implements IProject
     }
 
     // this is used only for frontend sorting, normaly we don't need this because we send it to backend
-    private sortResolver(a: IProjectDto, b: IProjectDto, sortKey: string, sortDir: 1 | -1): number {
-        if (sortKey === 'name') {
-            return a.name.localeCompare(b.name) * sortDir;
-        } else if (sortKey === 'companyName') {
-            return (a.company?.name || '').localeCompare(b.company?.name || '') * sortDir;
-        } else if (sortKey === 'timeSpent') {
-            return a.totalSpentTime - b.totalSpentTime * sortDir;
-        } else if (sortKey === 'deadline') {
-            return ((a.deadline?.getTime() || 0) - (b.deadline?.getTime() || 0)) * sortDir;
-        } else if (sortKey === 'completed') {
-            return (+a.completed - +b.completed) * sortDir;
-        }
-        return 0;
-    }
+    // private sortResolver(a: IProjectDto, b: IProjectDto, sortKey: string, sortDir: 1 | -1): number {
+    //     if (sortKey === 'name') {
+    //         return a.name.localeCompare(b.name) * sortDir;
+    //     } else if (sortKey === 'companyName') {
+    //         return (a.company?.name || '').localeCompare(b.company?.name || '') * sortDir;
+    //     } else if (sortKey === 'timeSpent') {
+    //         return a.totalSpentTime - b.totalSpentTime * sortDir;
+    //     } else if (sortKey === 'deadline') {
+    //         return ((a.deadline?.getTime() || 0) - (b.deadline?.getTime() || 0)) * sortDir;
+    //     } else if (sortKey === 'completed') {
+    //         return (+a.completed - +b.completed) * sortDir;
+    //     }
+    //     return 0;
+    // }
 
     public async get(id: string) {
         const project = this.transform(await super.get(id));
@@ -88,19 +88,17 @@ export class ProjectService extends BaseService<IProjectDto> implements IProject
     }
 
     public async getList(params?: Record<string, string | number | boolean>) {
-        let projects = (await super.getList(params)).map(this.transform);
-        if (params) {
-            // filter out on frontend, which often happens on backend not here, just I not used backend here
-            if (params.companyId) {
-                projects = projects.filter(x => x.company?.id === params.companyId);
-            }
-            if (params.sortKey && params.sortDir) {
-                const sortDir = params.sortDir === 'ASC' ? 1 : -1;
-                projects = projects.sort((a, b) => this.sortResolver(a, b, params.sortKey as string, sortDir))
-            }
-        }
+        const resp = (await super.getList(params));
+        resp.data = resp.data.map(this.transform)
+        // if (params) {
+        //     // if we do frontend sorting and filtering then we can place here
+        //     if (params.sortKey && params.sortDir) {
+        //         const sortDir = params.sortDir === 'ASC' ? 1 : -1;
+        //         resp.data = resp.data.sort((a, b) => this.sortResolver(a, b, params.sortKey as string, sortDir))
+        //     }
+        // }
 
-        return projects;
+        return resp;
     }
 
     public async create(item: IProjectDto): Promise<IProjectDto> {

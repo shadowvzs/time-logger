@@ -14,9 +14,13 @@ namespace API.Controllers
     {
         // GET api/projects/
         [HttpGet]
-        public async Task<ActionResult<System.Collections.Generic.List<Project>>> List()
+        public async Task<ActionResult<PaginationResult<Project>>> List([FromQuery] List.FilterQuery fr)
         {
-            return await Mediator.Send(new List.Query());
+            return await Mediator.Send(new List.Query{
+                CompanyId = fr.CompanyId,
+                SortKey = fr.SortKey,
+                SortDir = fr.SortDir
+            });
         }
 
         // GET api/projects/6319491A-EBDA-49CE-BA7F-7917D4B3E1A9
